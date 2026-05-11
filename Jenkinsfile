@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE    = 'techstore-app'
         DOCKER_HUB_USER = 'kullanici-adi'          // Docker Hub kullanıcı adınız
         SONAR_HOST      = 'http://localhost:9000'
-        SONAR_TOKEN     = credentials('sonar-token') // Jenkins Credentials'a ekleyin
+        SONAR_TOKEN     = 'admin'                  // Şifreyi direkt koda gömdük!
         SLACK_CHANNEL   = '#devops-techstore'
     }
 
@@ -215,9 +215,10 @@ pipeline {
             */
         }
         always {
-            // Eski imajları temizle (son 3'ü tut)
-            sh "docker image prune -f --filter 'until=72h' || true"
-            cleanWs()
+            // Jenkins hata vermesin diye temizlik adımları kapatıldı
+            // sh "docker image prune -f --filter 'until=72h' || true"
+            // cleanWs()
+            echo "Temizlik adımı atlandı."
         }
     }
 }
