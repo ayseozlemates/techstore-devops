@@ -22,6 +22,7 @@ pipeline {
                     . venv/bin/activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
+                    pip install pytest-cov  # Eksik olan kütüphaneyi ekledik!
                 '''
             }
         }
@@ -40,12 +41,10 @@ pipeline {
             }
         }
 
-        // SonarQube tamamen orijinal ve çalışacak
         stage('SonarQube Analysis') {
             steps {
                 sh '''
                     . venv/bin/activate
-                    # Sonar-scanner yoksa geçici olarak indirip çalıştırıyoruz (Gerçek analiz)
                     wget -qO- https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip > sonar.zip
                     unzip -q sonar.zip
                     ./sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
