@@ -5,7 +5,7 @@ pipeline {
     environment {
         DOCKER_IMAGE    = 'techstore-app'
         SONAR_HOST      = 'http://host.docker.internal:9000'
-        SONAR_TOKEN     = 'admin'
+        SONAR_TOKEN     = 'squ_e0cf4bb6b1738f87c923eab9f0facc42a07b9cb2'
     }
 
     stages {
