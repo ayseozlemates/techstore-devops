@@ -1,10 +1,10 @@
-// Guncelleme: Eksik paketler (pytest-cov, wget, unzip) ve gercek SonarQube ayarları eklendi.
+// Guncelleme: unzip ezip gecme komutu (-o) ve PYTHONPATH eklendi.
 pipeline {
     agent any
 
     environment {
         DOCKER_IMAGE    = 'techstore-app'
-        SONAR_HOST      = 'http://host.docker.internal:9000' // Jenkins Docker'dan dışarıdaki Sonar'a erişmek için
+        SONAR_HOST      = 'http://host.docker.internal:9000'
         SONAR_TOKEN     = 'admin'
     }
 
@@ -25,7 +25,7 @@ pipeline {
                     pip install -r requirements.txt
                     pip install pytest-cov
                 '''
-                echo "✅ Python sanal ortamı ve kütüphaneler (pytest-cov dahil) hazır"
+                echo "✅ Python ortamı hazır"
             }
         }
 
@@ -33,7 +33,8 @@ pipeline {
             steps {
                 sh '''
                     . venv/bin/activate
-                    pytest tests/test_app.py -v --tb=short --junit-xml=test-results/unit-tests.xml --cov=app --cov-report=xml:coverage.xml || true
+                    # PYTHONPATH=. ekleyerek app modulunu bulmasini sagladik
+                    PYTHONPATH=. pytest tests/test_app.py -v --tb=short --junit-xml=test-results/unit-tests.xml --cov=app --cov-report=xml:coverage.xml || true
                 '''
             }
             post {
@@ -48,7 +49,8 @@ pipeline {
                 sh '''
                     . venv/bin/activate
                     wget -qO- https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip > sonar.zip
-                    unzip -q sonar.zip
+                    # -o eklentisi ile soru sormadan direkt ustune yazmasini soyledik
+                    unzip -o -q sonar.zip
                     ./sonar-scanner-5.0.1.3006-linux/bin/sonar-scanner \
                         -Dsonar.projectKey=techstore \
                         -Dsonar.projectName="TechStore E-Commerce" \
