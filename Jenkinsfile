@@ -1,3 +1,4 @@
+// Guncelleme: Eksik paketler (pytest-cov, wget, unzip) ve gercek SonarQube ayarları eklendi.
 pipeline {
     agent any
 
@@ -22,8 +23,9 @@ pipeline {
                     . venv/bin/activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
-                    pip install pytest-cov  # Eksik olan kütüphaneyi ekledik!
+                    pip install pytest-cov
                 '''
+                echo "✅ Python sanal ortamı ve kütüphaneler (pytest-cov dahil) hazır"
             }
         }
 
@@ -62,6 +64,7 @@ pipeline {
                 sh """
                     docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} -t ${DOCKER_IMAGE}:latest .
                 """
+                echo "✅ Docker imajı oluşturuldu"
             }
         }
 
@@ -72,6 +75,7 @@ pipeline {
                     docker rm techstore-app 2>/dev/null || true
                     docker run -d --name techstore-app --restart unless-stopped -p 5000:5000 ${DOCKER_IMAGE}:latest
                 """
+                echo "✅ Uygulama ayağa kaldırıldı"
             }
         }
     }
